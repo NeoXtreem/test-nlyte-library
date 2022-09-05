@@ -12,8 +12,6 @@ namespace Library.Tests
     [TestClass]
     public class LibraryTests
     {
-        private static string _bookText;
-
         [TestMethod]
         public void MostCommonWordsTest()
         {
@@ -40,30 +38,34 @@ namespace Library.Tests
                 wordCounts.Add(new WordCount(BuildRandomString(i % 8 + 1, i % 8 > 3 ? prefix : string.Empty), i));
             }
 
-            _bookText = string.Join(" ", wordCounts
+            // Act
+            var bookText = string.Join(" ", wordCounts
                 .SelectMany(x => Enumerable.Repeat(x.Word, x.Count))
                 .OrderBy(_ => random.Next()).AsEnumerable());
+
+            var sut = new LibraryService(new FakeBookRepository(bookText));
+            var result = sut.GetTopWords(Guid.NewGuid().ToString(), maxWords, minLength, string.Empty);
+
+            // Assert
 
             var expected = wordCounts
                 .Where(w => w.Word.Length >= minLength && w.Word.StartsWith(prefix))
                 .OrderByDescending(w => w.Count)
                 .Take(maxWords)
-                .Select(w => (char.ToUpperInvariant(w.Word.First()) + w.Word.Substring(1).ToLowerInvariant(), w.Count));
-
-            // Act
-            var sut = new LibraryService(new FakeBookRepository());
-            var result = sut.GetTopWords(Guid.NewGuid().ToString(), maxWords, minLength, string.Empty);
-
-            // Assert
+                .Select(w => (char.ToUpperInvariant(w.Word.First()) + w.Word.Substring(1).ToLowerInvariant(), w.Count))
+                .ToArray();
 
             // Use tuples with primitives for comparison as these are fully value types.
-            CollectionAssert.AreEqual(expected.ToArray(), result.Select(w => (w.Word, w.Count)).ToArray());
+            CollectionAssert.AreEqual(expected, result.Select(w => (w.Word, w.Count)).ToArray());
         }
 
         private static string BuildRandomString(int length, string prefix = "") => prefix + Path.GetFileNameWithoutExtension(Path.GetRandomFileName()).Substring(0, length);
 
         private class FakeBookRepository : IBookRepository
         {
+            private readonly string _bookText;
+
+            public FakeBookRepository(string bookText) => _bookText = bookText;
             public IEnumerable<BookInfo> GetCatalogue() => throw new NotImplementedException();
 
             public string GetText(string id) => _bookText;
