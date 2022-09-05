@@ -1,1 +1,96 @@
-﻿
+﻿body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.row {
+    display: flex;
+}
+
+.library {
+    flex: 35%;
+    padding: 15px 0;
+    padding-left: 12px;
+}
+
+.library h2 {
+    padding-left: 8px;
+    background-color: lightgreen;
+    font-size: 20px;
+}
+
+.books {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.searchBox {
+    flex: 65%;
+    padding: 15px;
+}
+
+.searchBox td {
+    font-size: 20px;
+}
+
+.searchBox span {
+    background-color: lightgreen;
+    font-size: 20px;
+    vertical-align: top;
+}
+
+.searchResults {
+    padding: 0 12px;
+    border: 1px solid #ccc;
+    width: 100%;
+    min-height: 100px;
+    margin: 10px;
+}
+
+.searchResults h2 {
+    background-color: lightgreen;
+    font-size: 20px;
+    width: max-content;
+}
+
+#searchText {
+    font-size: 18px;
+    padding: 11px;
+    border: 1px solid #ddd;
+}
+
+#btnSearch {
+    font-size: 18px;
+}
+
+#searchText {
+    height: 32px;
+    border-radius: 3px;
+    border: 1px solid #eaeaea;
+    padding: 5px 10px;
+    font-size: 12px;
+    margin: 10px;
+}
+
+#books td a {
+    padding: 12px;
+    text-decoration: underline;
+    color: black;
+    display: block
+}
+
+#books td a:hover {
+    background-color: #7b62fd;
+}
+
+#errorMessage {
+    color: red;
+    margin: 10px;
+}
+
+#searchResultsLabel {
+    margin: 10px;
+}

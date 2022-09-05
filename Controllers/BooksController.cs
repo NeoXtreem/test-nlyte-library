@@ -1,31 +1,29 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Configuration;
 using System.Web.Http;
+using Library.Repositories;
+using Library.Services;
 
 namespace Library.Controllers
 {
     [RoutePrefix("api/books")]
     public class BooksController : ApiController
     {
-        /*
-		The following GET methods are expected on the api/books controller:
+        private static readonly LibraryService LibraryService;
+        private static readonly int MaxTopWords = int.Parse(ConfigurationManager.AppSettings["MaxTopWords"]);
+        private static readonly int MinTopWordsLength = int.Parse(ConfigurationManager.AppSettings["MinTopWordsLength"]);
 
-			1. GET api/books
-				Returns a list of Ids & Titles for all the books in the Resources folder
-				Titles should be the name of the filename, minus the extension.
-				The Id should be unique.
+        static BooksController() => LibraryService = new LibraryService(new FileBookRepository());
 
-			2. GET api/books/{Id}
-				Returns a list of the most common 10 words (min 5 letters) and how many times they occur in the specified book.
-				When parsing, whitespace, linefeeds and punctiation should be ignored, and words matched case-insensitively (e.g. "the" and "The" and "THE" will be returned as "The"=3)
-				Words should be returned in capital case (e.g. Word), and the list should be sorted in decreasing incidence.
-
-			3. GET api/books/{Id}?query={query}
-				Returns a list of all words which start with the specified string (min 3 letters) and the number of times they occur within the specified book.
-				Case matching should be insensitive.
-
-		The logic for these calls should largely be encapsulated in other classes. This should make it easier to Unit Test those classes
-		to validate the expected behaviour.
-		*/
+        /// <summary>
+        /// Gets the top words of the specified book, or the list of books if no book ID is specified.
+        /// </summary>
+        /// <param name="id">The book ID</param>
+        /// <param name="startsWith">The prefix that all top words should start with</param>
+        /// <returns>The top words of the specified book, or the list of books if no book ID is specified.</returns>
+        public IHttpActionResult Get(string id = null, [FromUri] string startsWith = null)
+        {
+            if (string.IsNullOrEmpty(id)) return Json(LibraryService.GetCatalogue());
+            return Json(LibraryService.GetTopWords(id, MaxTopWords, MinTopWordsLength, startsWith));
+        }
     }
 }
