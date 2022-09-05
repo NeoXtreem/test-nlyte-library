@@ -12,6 +12,7 @@ namespace Library.Controllers
         private static readonly int MaxTopWords = int.Parse(ConfigurationManager.AppSettings["MaxTopWords"]);
         private static readonly int MinTopWordsLength = int.Parse(ConfigurationManager.AppSettings["MinTopWordsLength"]);
 
+        // Simulate dependency injection using a static constructor.
         static BooksController() => LibraryService = new LibraryService(new FileBookRepository());
 
         /// <summary>

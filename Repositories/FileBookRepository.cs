@@ -26,13 +26,11 @@ namespace Library.Repositories
             // Load the book text from file (from the cache if possible).
             if (!_bookCache.TryGetValue(id, out var text))
             {
-                text = File.ReadAllText(Path.Combine(_booksPath, FileNameFromId(id)));
+                text = File.ReadAllText(Path.Combine(_booksPath, id + BookFileExtension));
                 _bookCache.Add(id, text);
             }
 
             return text;
         }
-
-        private static string FileNameFromId(string id) => $"{id}{BookFileExtension}";
     }
 }
